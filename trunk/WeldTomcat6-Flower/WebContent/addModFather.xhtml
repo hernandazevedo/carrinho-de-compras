@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+    xmlns:rich="http://richfaces.org/rich"
+	template="template.xhtml">
+
+	<ui:define name="title">Father add Mod</ui:define>
+	<ui:define name="head">Father add Mod</ui:define>
+	<ui:define name="content">
+		<h:form>
+			<p>
+
+				<h:outputLabel for="name" value="#{msgs.firstName}"  />
+				<h:inputText id="name" value="#{fatherConversation.father.name}"  label="#{msgs.firstName}"/>
+				<br />
+				<p>Data</p>
+
+	                <rich:calendar id="cal" value="#{fatherConversation.father.date}"
+						 popup="true"
+						 showApplyButton="false"
+						 style="width:200px"
+						 >
+						 
+					 </rich:calendar>
+
+	            <br/>
+				
+				<h:outputLabel for="surname" value="surname:" />
+				<h:inputText id="surname"
+					value="#{fatherConversation.father.surname}" />
+				<br />
+				<h:commandButton
+					rendered="#{not empty fatherConversation.father.id}"
+					action="#{fatherConversation.update}" value="update" />
+				<br />
+				<h:commandButton rendered="#{empty fatherConversation.father.id}"
+					action="#{fatherConversation.save}" value="save" />
+				<br />
+				<h:commandButton
+					rendered="#{not empty fatherConversation.father.id}"
+					action="#{fatherConversation.delete}" value="delete" />
+			</p>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
