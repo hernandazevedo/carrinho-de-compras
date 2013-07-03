@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets">
+	<ui:composition template="/template/wizardTemplate.xhtml">
+		<ui:param name="title" value="Second step"/>
+		<ui:define name="head">Father view</ui:define>
+		<ui:define name="stepBody">
+			<h:outputLabel value="Street:"/>
+			<h:inputText value="#{wizard.user.address.street}"/>
+			<h:outputLabel value="Number:"/>
+			<h:inputText value="#{wizard.user.address.number}"/>
+			<h:outputLabel value="Postal code:"/>
+			<h:inputText value="#{wizard.user.address.postalCode}"/>
+			<h:outputLabel value="City:"/>
+			<h:inputText value="#{wizard.user.address.city}"/>
+			<h:outputLabel value="Country:"/>
+			<h:inputText value="#{wizard.user.address.country}"/>
+		</ui:define>
+	</ui:composition>
+</html>

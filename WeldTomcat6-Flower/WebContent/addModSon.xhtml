@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" template="template.xhtml">
+
+	<ui:define name="title">son add Mod</ui:define>
+	<ui:define name="head">son add Mod</ui:define>
+	<ui:define name="content">
+		<h:form>
+			<p>
+
+				<h:outputLabel for="name" value="name" />
+				<h:inputText id="name" value="#{sonConversation.son.name}" />
+				<br />
+				<h:outputLabel for="surname" value="surname:" />
+				<h:inputText id="surname" value="#{sonConversation.son.surname}" />
+				<br />
+				<h:commandButton rendered="#{not empty sonConversation.son.id}"
+					action="#{sonConversation.update}" value="update" />
+				<br />
+				<h:commandButton rendered="#{empty sonConversation.son.id}"
+					action="#{sonConversation.save}" value="save" />
+				<br />
+				<h:commandButton rendered="#{not empty sonConversation.son.id}"
+					action="#{sonConversation.delete}" value="delete" />
+			</p>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+

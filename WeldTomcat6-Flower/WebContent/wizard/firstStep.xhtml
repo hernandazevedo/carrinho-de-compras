@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets">
+	<ui:composition template="/template/wizardTemplate.xhtml">
+		<ui:param name="title" value="First step"/>
+		<ui:define name="head">Father view</ui:define>
+		<ui:define name="stepBody">
+			<h:outputLabel value="First name:"/>
+			<h:inputText value="#{wizard.user.firstName}"/>
+			<h:outputLabel value="Middle name:"/>
+			<h:inputText value="#{wizard.user.middleName}"/>
+			<h:outputLabel value="Last name:"/>
+			<h:inputText value="#{wizard.user.lastName}"/>
+			<h:outputLabel value="Birth date:"/>
+			<h:inputText value="#{wizard.user.birthDate}">
+				<f:convertDateTime pattern="dd-MM-yyyy"/>
+			</h:inputText>
+		</ui:define>
+	</ui:composition>
+</html>
