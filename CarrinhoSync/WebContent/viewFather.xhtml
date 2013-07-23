@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" template="template.xhtml">
+
+	<ui:define name="title">Father view</ui:define>
+	<ui:define name="head">Father view</ui:define>
+	<ui:define name="content">
+		<h:form>
+			<p>
+				<h:outputLabel for="id" value="id:" />
+				<h:outputText id="id" value="#{fatherConversation.father.id}" />
+				<br />
+				<h:outputLabel for="name" value="name" />
+				<h:outputText id="name" value="#{fatherConversation.father.name}" />
+				<br />
+				<h:outputLabel for="surname" value="surname:" />
+				<h:outputText id="surname"
+					value="#{fatherConversation.father.surname}" />
+				<br />
+				<h:dataTable value="#{fatherConversation.father.sons}" var="son">
+					<h:column>
+						<f:facet name="header">surname</f:facet>
+						<h:outputText value="#{son.surname}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">name</f:facet>
+						<h:outputText value="#{son.name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">action</f:facet>
+						<h:commandLink action="#{sonConversation.modifyById}"
+							value="mod" >
+							<f:setPropertyActionListener target="#{sonConversation.idModify}" value="#{son.id}" />
+						</h:commandLink>
+					</h:column>
+				</h:dataTable>
+				<br />
+				<h:commandButton value="add son" action="#{sonConversation.add}" />
+			</p>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+
