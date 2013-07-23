@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+	<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" template="mainTemplate.xhtml">
+		<ui:define name="body">
+			<h:form>
+			<!-- 
+				<ui:repeat value="#{wizard.views}" var="currentView" varStatus="status">
+					<c:set var="index" value="#{status.index}"/>
+					<c:set var="name" value="#{currentView.name}"/>
+					<c:set var="available" value="#{currentView.available}"/>
+					<h:commandLink value="#{index + 1} #{name}" rendered="#{available}"/>
+					<h:outputText value="#{index + 1} #{name}" rendered="#{not available}"/>
+					<h:outputText value="&#160;&#160;&#160;"/>
+				</ui:repeat>
+				 -->
+				<h:panelGrid columns="2">
+					<ui:insert name="stepBody"/>
+				</h:panelGrid>
+				<h:commandButton value="Previous" action="#{wizard.previous}" disabled="#{wizard.first}"/>
+				<h:commandButton value="Next" action="#{wizard.next}" disabled="#{wizard.last}"/>
+				<h:commandButton value="Finish" action="#{wizard.finish}" disabled="#{not wizard.last}"/>
+				<h:commandButton value="Cancel" action="#{wizard.cancel}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
