@@ -56,6 +56,8 @@ public class SyncService {
 			List<Parceiro> listaParceiros = null; 
 			List<Produto> listaProdutos = em.createQuery("select p from Produto p order by p.nome",Produto.class).getResultList();
 			
+			//TODO pensar em uma forma de cada objeto ter uma propriedade dizendo se eh operacao: insert, update ou delete.
+			
 			resposta.setListaProduto(listaProdutos);
 			resposta.setListaParceiro(listaParceiros);
 			resposta.setCodigoStatus(SyncService.STATUS_OK);
