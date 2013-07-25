@@ -2,7 +2,7 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
     <persistence-unit name="pu" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <non-jta-data-source>java:comp/env/jdbc/weldtomcatmontreal</non-jta-data-source>
+        <non-jta-data-source>java:comp/env/jdbc/weldtomcatamazon</non-jta-data-source>
         
             <properties>
                 <!--  
@@ -16,7 +16,7 @@
                 <property name="hibernate.connection.password" value="postgres" />
                 <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/boadica" />
                  -->
-                <property name="hibernate.hbm2ddl.auto" value="update" />
+                <property name="hibernate.hbm2ddl.auto" value="validate" />
             </properties>
         
         </persistence-unit>
