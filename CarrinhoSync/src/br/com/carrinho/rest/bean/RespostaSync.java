@@ -1,7 +1,10 @@
-package by.giava.model;
+package br.com.carrinho.rest.bean;
 
 import java.io.Serializable;
 import java.util.List;
+
+import br.com.carrinho.entidades.Parceiro;
+import br.com.carrinho.entidades.Produto;
 
 public class RespostaSync implements Serializable{
 	/**
@@ -11,7 +14,8 @@ public class RespostaSync implements Serializable{
 	private Integer codigoStatus;
 	private String messageStatus;
 	
-	List<Track> lista;
+	List<Produto> listaProduto;
+	List<Parceiro> listaParceiro;
 
 	public Integer getCodigoStatus() {
 		return codigoStatus;
@@ -29,14 +33,21 @@ public class RespostaSync implements Serializable{
 		this.messageStatus = messageStatus;
 	}
 
-	public List<Track> getLista() {
-		return lista;
+	public List<Produto> getListaProduto() {
+		return listaProduto;
 	}
 
-	public void setLista(List<Track> lista) {
-		this.lista = lista;
+	public void setListaProduto(List<Produto> listaProduto) {
+		this.listaProduto = listaProduto;
 	}
-	
+
+	public List<Parceiro> getListaParceiro() {
+		return listaParceiro;
+	}
+
+	public void setListaParceiro(List<Parceiro> listaParceiro) {
+		this.listaParceiro = listaParceiro;
+	}
 	
 
 }
