@@ -22,29 +22,6 @@ public class SyncService {
 	EntityManager em;
 
 	
-	/**
-	 * Metodo que realiza o sincronismo do celular
-	 * Exemplo de chamada: http://localhost:8080/CarrinhoSync/rest/sync/350845555897085
-	   Exemplo de resposta:
-		{
-		codigoStatus: 0,
-		messageStatus: null,
-		listaProduto: [
-		{
-		codigoBarras: "12345",
-		nome: "Produto teste",
-		urlImagem: "http://t3.gstatic.com/images?q=tbn:ANd9GcQTbYC6J9Dj1jWFyGCATwb2-3Nbjbyq300ZmE0IajLRobPayBB56A",
-		preco: 5,
-		parceiroId: 1,
-		dataAlteracao: 1374785386000,
-		dataCriacao: 1374785386000
-		}
-		],
-		listaParceiro: null
-		}
-	 * @param imei
-	 * @return
-	 */
 	public RespostaSync retornaSync(String imei){
 		System.out.println("Sincronizando o imei: "+imei);
 		
