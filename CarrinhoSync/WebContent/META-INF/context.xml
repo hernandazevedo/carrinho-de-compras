@@ -5,7 +5,7 @@
 		type="javax.enterprise.inject.spi.BeanManager" factory="org.jboss.weld.resources.ManagerObjectFactory" />
 	
 	
-	<Resource name="jdbc/weldtomcatmontreal" 
+	<Resource name="jdbc/resourcelocal" 
 		  auth="Container" 
 		  type="javax.sql.DataSource" 
 		  maxActive="5" 
@@ -14,7 +14,7 @@
 		  maxWait="5000" removeAbandoned="true" 
 		  removeAbandonedTimeout="300" logAbandoned="true"
 		  username="root" password="root" driverClassName="com.mysql.jdbc.Driver" 
-		  url="jdbc:mysql://localhost:3306/boadica" description="Base de dados"
+		  url="jdbc:mysql://localhost:3306/masterkey" description="Base de dados"
 		  />
 		  
 	
