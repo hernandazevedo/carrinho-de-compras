@@ -76,21 +76,21 @@ public class MainActivity extends Activity {
 	            public void onSuccess(String response) {
 	            	
 	            List<Produto> produtos = null;
-	              try {
-	            	  produtos = parseJsonToListProduto(response);
-	            	  for(Produto p : produtos){
-	            		  if(produtoDAO.get(p.getCodigoBarras()) == null){
-		            		  if(produtoDAO.insert(p)){
-		            			  Log.i(MainActivity.class.getName(), "Produto com codigo "+p.getCodigoBarras() + " inserido com sucesso!");
+	              	try {
+		            	  produtos = parseJsonToListProduto(response);
+		            	  for(Produto p : produtos){
+		            		  if(produtoDAO.get(p.getCodigoBarras()) == null){
+			            		  if(produtoDAO.insert(p)){
+			            			  Log.i(MainActivity.class.getName(), "Produto com codigo "+p.getCodigoBarras() + " inserido com sucesso!");
+			            		  }
+		            		  }else{
+		            			  produtoDAO.update(p);
 		            		  }
-	            		  }else{
-	            			  produtoDAO.update(p);
-	            		  }
-	            	  }
+		            	  }
 	            	  
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+					} catch (Exception e) {
+						Log.e(MainActivity.class.getName(), "Erro ao salvar o produto: "+e.getMessage() );
+					}
 	            }
 	            private List<Produto> parseJsonToListProduto(String string) {
 	            	JSONObject obj = null;
