@@ -79,8 +79,12 @@ public class MainActivity extends Activity {
 	              try {
 	            	  produtos = parseJsonToListProduto(response);
 	            	  for(Produto p : produtos){
-	            		  if(produtoDAO.insert(p)){
-	            			  Log.i(MainActivity.class.getName(), "Produto com codigo "+p.getCodigoBarras() + " inserido com sucesso!");
+	            		  if(produtoDAO.get(p.getCodigoBarras()) == null){
+		            		  if(produtoDAO.insert(p)){
+		            			  Log.i(MainActivity.class.getName(), "Produto com codigo "+p.getCodigoBarras() + " inserido com sucesso!");
+		            		  }
+	            		  }else{
+	            			  produtoDAO.update(p);
 	            		  }
 	            	  }
 	            	  
