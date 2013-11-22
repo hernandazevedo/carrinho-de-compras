@@ -5,7 +5,7 @@ import android.os.SystemClock;
 
 public class Constants {
 
-   public static final String LOG_TAG = "DealDroid";
+   public static final String LOG_TAG = "CarrinhoApp";
 
    public static final String FORCE_RELOAD = "FORCE_RELOAD";
 
@@ -17,10 +17,4 @@ public class Constants {
 //   public static final long ALARM_TRIGGER_AT_TIME = SystemClock.elapsedRealtime() + 30000;
    public static final long ALARM_TRIGGER_AT_TIME = SystemClock.elapsedRealtime() + 30000;
 
-   // for SharedPrefernces keys for current deals (so we can compare and know if we have new deals)
-   public static final String DEAL1 = "deal1";
-   public static final String DEAL2 = "deal2";
-   public static final String DEAL3 = "deal3";
-   public static final String DEAL4 = "deal4";
-   public static final String DEAL5 = "deal5"; // there usually isn't a deal 5, but an extra in case
 }
