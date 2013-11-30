@@ -11,10 +11,27 @@
 
       <Button 
 	        android:id="@+id/btn_sync"
-	        android:text="Process Sync"
+	        android:text="Scanear"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:onClick="processSync"
+	        android:onClick="scan"
 	        />
-	    
+
+       <ListView
+           android:id="@+id/listView_produtos"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_alignParentTop="true"
+           android:layout_centerHorizontal="true"
+           android:layout_marginTop="68dp" >
+       </ListView>
+
+       <TextView
+           android:id="@+id/scan_content"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_alignLeft="@+id/btn_sync"
+           android:layout_below="@+id/btn_sync" />
+
+
 </RelativeLayout>

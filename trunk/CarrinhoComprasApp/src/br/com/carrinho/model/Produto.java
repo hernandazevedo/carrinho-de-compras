@@ -9,6 +9,7 @@ public class Produto implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private int imageID;
 	private String codigoBarras;
 	private String nomeProduto;
 	private String urlImage;
@@ -44,6 +45,11 @@ public class Produto implements Serializable {
 	public void setParceiroId(Integer parceiroId) {
 		this.parceiroId = parceiroId;
 	}
-	
+	public int getImageID() {
+		return imageID;
+	}
+	public void setImageID(int imageID) {
+		this.imageID = imageID;
+	}
 	
 }
