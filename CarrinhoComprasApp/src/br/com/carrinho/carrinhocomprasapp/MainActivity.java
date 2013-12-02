@@ -22,6 +22,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import br.com.carrinho.dao.ProdutoDAO;
 import br.com.carrinho.model.Produto;
@@ -97,7 +98,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		launchSimplePayment.setOnClickListener(this);
 		// The CheckoutButton is an android LinearLayout so we can add it to our display like any other View.
 		RelativeLayout ll = (RelativeLayout)findViewById(R.id.viewMain);
-		ll.addView(launchSimplePayment);
+		LayoutParams lp = new LayoutParams(300,68);
+		lp.addRule(RelativeLayout.RIGHT_OF, R.id.btn_sync);
+		
+		ll.addView(launchSimplePayment,lp);
 		
 		
 	}
