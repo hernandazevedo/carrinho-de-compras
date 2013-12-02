@@ -57,6 +57,7 @@ public class MainActivity extends Activity implements OnClickListener {
 	ListView listView;
 	
 	private TextView contentTxt;
+	private TextView totalTxt;
 	ProdutoAdapter adapter;
 	
 	// You will need at least one CheckoutButton, this application has four for examples
@@ -112,6 +113,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.activity_main);
 
 		contentTxt = (TextView)findViewById(R.id.scan_content);
+		totalTxt = (TextView)findViewById(R.id.total);
 		
 		listView = (ListView) findViewById(R.id.listView_produtos);
 		
@@ -308,12 +310,28 @@ public class MainActivity extends Activity implements OnClickListener {
 					"Produto encontrado adicionando no carrinho");
 //			contentTxt.setText("Produto encontrado adicionando no carrinho");
 			carrinho.add(p);
+			
 			adapter.notifyDataSetChanged();
 
 //			contentTxt.setText("CONTENT: " + codigoBarras + "Produto: "+p.getNomeProduto());
 		}else{
 			contentTxt.setText("Produto nao encontrado");
 		}
+		
+		totalTxt.setText(getTotalCarrinho());
+	}
+
+	private String getTotalCarrinho() {
+		if(carrinho == null || carrinho.isEmpty())
+			return null;
+			
+		double valorTotal = 0.0;
+		for(Produto p : carrinho){
+			valorTotal += Double.parseDouble(p.getPreco());
+		}
+		
+		
+		return "Total: "+valorTotal;
 	}
 
 	@Override

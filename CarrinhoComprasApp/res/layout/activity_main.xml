@@ -25,12 +25,17 @@
        <ListView
            android:id="@+id/listView_produtos"
            android:layout_width="match_parent"
-           android:layout_height="wrap_content"
+           android:layout_height="300dp"
            android:layout_alignLeft="@+id/scan_content"
            android:layout_below="@+id/scan_content" >
 
        </ListView>
 
-       
+       <TextView
+           android:id="@+id/total"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:layout_alignLeft="@+id/listView_produtos"
+           android:layout_below="@+id/listView_produtos" />
 
 </RelativeLayout>
