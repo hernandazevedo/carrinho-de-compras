@@ -28,7 +28,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 public class SyncService extends IntentService {
 
 	//Teste com ip externo usando 3g
-	private static final String host = "hernand.no-ip.org";
+	private static String hostPort = "hernand.no-ip.org";
 
 	//Teste usando localhost
 //	private static final String host = "10.0.2.2";
@@ -99,9 +99,9 @@ public class SyncService extends IntentService {
 		if(freq == null || freq.equals("-1")) return;
 		
 		produtoDAO = new ProdutoDAO(context);
-		
+		hostPort = PreferenceManager.getDefaultSharedPreferences(context).getString("hostport", null); 
 
-		String urlCall = "http://"+host+":8080/CarrinhoSync/rest/sync/" + imei;
+		String urlCall = "http://"+hostPort+"/CarrinhoSync/rest/sync/" + imei;
 		
 		try {
 			String response = sendGet(urlCall);
