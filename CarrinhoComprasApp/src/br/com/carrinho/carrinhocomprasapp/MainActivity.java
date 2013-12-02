@@ -15,6 +15,7 @@ import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 import br.com.carrinho.dao.ProdutoDAO;
 import br.com.carrinho.model.Produto;
 
@@ -217,6 +219,23 @@ public class MainActivity extends Activity implements OnClickListener {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+	
+	@Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	    case R.id.action_settings:
+	      Toast.makeText(this, "Configure o funcionamento da app", Toast.LENGTH_SHORT)
+	          .show();
+	      
+	      //TODO criar uma Activity pra fazer as configurações do sync
+	      break;
+	    
+	    default:
+	      break;
+	    }
+
+	    return true;
+	  } 
 
 	private String getImei() {
 		String imei = null;
