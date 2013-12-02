@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
@@ -140,9 +141,9 @@ public class MainActivity extends Activity implements OnClickListener {
 	            	  adapter = new ProdutoAdapter();
 	            	  listView.setAdapter(adapter);
 	            	
-	        
-		
-		scheduleAlarmReceiver();
+	          
+        	  CarrinhoApp app = (CarrinhoApp) getApplication();
+        	  app.scheduleAlarmReceiver();
 	}
 
 	/**
@@ -224,9 +225,11 @@ public class MainActivity extends Activity implements OnClickListener {
 	  public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	    case R.id.action_settings:
-	      Toast.makeText(this, "Configure o funcionamento da app", Toast.LENGTH_SHORT)
+	      Toast.makeText(this, "Configure o funcionamento da app", Toast.LENGTH_LONG)
 	          .show();
-	      
+	      Intent it = new Intent(this, SettingsActivity.class);
+		  startActivity(it);
+			
 	      //TODO criar uma Activity pra fazer as configurações do sync
 	      break;
 	    
@@ -252,28 +255,12 @@ public class MainActivity extends Activity implements OnClickListener {
 	}
 
 	public void processSync(View v) {
+
+		
 		new SyncService().doSync(getImei(), this);
 	}
 
-	// Schedule AlarmManager to invoke DealAlarmReceiver and cancel any existing
-	// current PendingIntent
-	// we do this because we *also* invoke the receiver from a BOOT_COMPLETED
-	// receiver
-	// so that we make sure the service runs either when app is
-	// installed/started, or when device boots
-	private void scheduleAlarmReceiver() {
-		AlarmManager alarmMgr = (AlarmManager) this
-				.getSystemService(Context.ALARM_SERVICE);
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0,
-				new Intent(this, CarrinhoAlarmReceiver.class),
-				PendingIntent.FLAG_CANCEL_CURRENT);
-
-		// Use inexact repeating which is easier on battery (system can phase
-		// events and not wake at exact times)
-		alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-				Constants.ALARM_TRIGGER_AT_TIME, Constants.ALARM_INTERVAL,
-				pendingIntent);
-	}
+	
 	
 	public void scan(View view){
 		

@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import br.com.carrinho.dao.ProdutoDAO;
 import br.com.carrinho.model.Produto;
@@ -93,6 +94,10 @@ public class SyncService extends IntentService {
 
 		
 	public void doSync(String imei, Context context) {
+		String freq = PreferenceManager.getDefaultSharedPreferences(context).getString("sync_frequency", null);
+		
+		if(freq == null || freq.equals("-1")) return;
+		
 		produtoDAO = new ProdutoDAO(context);
 		
 
