@@ -94,7 +94,7 @@ public class SyncService extends IntentService {
 		
 	public void doSync(String imei, Context context) {
 		produtoDAO = new ProdutoDAO(context);
-		AsyncHttpClient client = new AsyncHttpClient();
+		
 
 		String urlCall = "http://"+host+":8080/CarrinhoSync/rest/sync/" + imei;
 		
@@ -106,81 +106,6 @@ public class SyncService extends IntentService {
 			e1.printStackTrace();
 		}
 		
-		client.get(urlCall, new AsyncHttpResponseHandler() {
-
-			@SuppressWarnings("deprecation")
-			@Override
-			public void onFailure(Throwable error) {
-				if (error != null) {
-					System.out.println(error);
-				}
-				super.onFailure(error);
-			}
-
-			@Override
-			public void onSuccess(String response) {
-
-				List<Produto> produtos = null;
-				try {
-					produtos = parseJsonToListProduto(response);
-					for (Produto p : produtos) {
-						if (produtoDAO.get(p.getCodigoBarras()) == null) {
-							if (produtoDAO.insert(p)) {
-								Log.i(MainActivity.class.getName(),
-										"Produto com codigo "
-												+ p.getCodigoBarras()
-												+ " inserido com sucesso!");
-							}
-						} else {
-							produtoDAO.update(p);
-						}
-					}
-
-				} catch (Exception e) {
-					Log.e(MainActivity.class.getName(),
-							"Erro ao salvar o produto: " + e.getMessage());
-				}
-			}
-
-			private List<Produto> parseJsonToListProduto(String string) {
-				JSONObject obj = null;
-				List<Produto> produtos = new ArrayList<Produto>();
-				try {
-					obj = new JSONObject(string);
-
-					JSONArray discountListArray = obj
-							.getJSONArray("listaProduto");
-					for (int i = 0; i < discountListArray.length(); i++) {
-						String codigoBarras = discountListArray
-								.getJSONObject(i).getString("codigoBarras");
-						String nome = discountListArray.getJSONObject(i)
-								.getString("nome");
-						String preco = discountListArray.getJSONObject(i)
-								.getString("preco");
-						String urlImagem = discountListArray.getJSONObject(i)
-								.getString("urlImagem");
-						Integer parceiroId = discountListArray.getJSONObject(i)
-								.getInt("parceiroId");
-
-						Produto p = new Produto();
-						p.setCodigoBarras(codigoBarras);
-						p.setNomeProduto(nome);
-						p.setParceiroId(parceiroId);
-						p.setUrlImage(urlImagem);
-						p.setPreco(preco);
-
-						produtos.add(p);
-					}
-
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				return produtos;
-			}
-
-		});
 	}
 
 	// HTTP POST request

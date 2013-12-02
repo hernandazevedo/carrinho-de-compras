@@ -316,9 +316,9 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 		if(v == launchSimplePayment) {
 			// Use our helper function to create the simple payment.
-			PayPalAdvancedPayment payment = exampleSimplePayment();	
+			PayPalAdvancedPayment payment = getPayment();	
 			// Use checkout to create our Intent.
-			Intent checkoutIntent = PayPal.getInstance().checkout(payment, this, new ResultDelegate());
+//			Intent checkoutIntent = PayPal.getInstance().checkout(payment, this, new ResultDelegate());
 			// Use the android's startActivityForResult() and pass in our Intent. This will start the library.
 //	    	startActivityForResult(checkoutIntent, request);
 	    	
@@ -422,6 +422,92 @@ public class MainActivity extends Activity implements OnClickListener {
     	
     	return payment;
 	}
+	
+	/**
+	 * Create a PayPalPayment which is used for simple payments.
+	 * 
+	 * @return Returns a PayPalPayment. 
+	 */
+	private PayPalAdvancedPayment getPayment() {
+		
+		//TODO falta fazer aqui o preenchimento dos dados do pagamento conforme a lista de produtos do carrinho
+		
+		// Create a basic PayPalPayment.
+		// Create the PayPalAdvancedPayment.
+				PayPalAdvancedPayment payment = new PayPalAdvancedPayment();
+				// Sets the currency type for this payment.
+		    	payment.setCurrencyType("BRL");
+		    	// Sets the Instant Payment Notification url. This url will be hit by the PayPal server upon completion of the payment.
+		    	payment.setIpnUrl("http://www.exampleapp.com/ipn");
+		    	// Sets the memo. This memo will be part of the notification sent by PayPal to the necessary parties.
+		    	payment.setMemo("This sure is a swell memo for a parallel payment.");
+		    	
+		    	// Create the PayPalReceiverDetails. You must have at least one of these to make an advanced payment and you should have
+		    	// more than one for a Parallel or Chained payment.
+				PayPalReceiverDetails receiver1 = new PayPalReceiverDetails();
+				// Sets the recipient for the PayPalReceiverDetails. This can also be a phone number.
+				
+				//TODO pegar o recipient do atual parceiro onde o cliente esta comprando
+				receiver1.setRecipient("hernand.azevedo-facilitator@gmail.com");
+				// Sets the subtotal of the payment for this receiver, not including tax and shipping amounts. 
+				
+				// Sets the primary flag for this receiver. This is defaulted to false. No receiver can be a primary for a parallel payment.
+				receiver1.setIsPrimary(false);
+				// Sets the payment type. This can be PAYMENT_TYPE_GOODS, PAYMENT_TYPE_SERVICE, PAYMENT_TYPE_PERSONAL, or PAYMENT_TYPE_NONE.
+				receiver1.setPaymentType(PayPal.PAYMENT_TYPE_GOODS);
+				
+				// PayPalInvoiceData can contain tax and shipping amounts. It also contains an ArrayList of PayPalInvoiceItem which can
+		    	// be filled out. These are not required for any transaction.
+				PayPalInvoiceData invoice1 = new PayPalInvoiceData();
+				// Sets the tax amount.
+//				invoice1.setTax(new BigDecimal("2.20"));
+				// Sets the shipping amount.
+				invoice1.setShipping(BigDecimal.ZERO);
+				
+				double subTotal = 0.0;
+				
+				for(Produto p : carrinho){
+					// PayPalInvoiceItem has several parameters available to it. None of these parameters is required.
+					PayPalInvoiceItem item1 = new PayPalInvoiceItem();
+					// Sets the name of the item.
+			    	item1.setName(p.getNomeProduto());
+			    	// Sets the ID. This is any ID that you would like to have associated with the item.
+			    	item1.setID(p.getCodigoBarras());
+			    	// Sets the total price which should be (quantity * unit price). The total prices of all PayPalInvoiceItem should add up
+			    	// to less than or equal the subtotal of the payment.
+			    	
+			    	subTotal += Double.parseDouble(p.getPreco()); 
+			    	item1.setTotalPrice(new BigDecimal(p.getPreco()));
+			    	// Sets the unit price.
+			    	item1.setUnitPrice(new BigDecimal(p.getPreco()));
+			    	// Sets the quantity.
+			    	item1.setQuantity(1);
+			    	// Add the PayPalInvoiceItem to the PayPalInvoiceData. Alternatively, you can create an ArrayList<PayPalInvoiceItem>
+			    	// and pass it to the PayPalInvoiceData function setInvoiceItems().
+			    	invoice1.getInvoiceItems().add(item1);
+				}
+		    
+				receiver1.setSubtotal(new BigDecimal(subTotal));
+				
+		    	// Sets the PayPalReceiverDetails invoice data.
+		    	receiver1.setInvoiceData(invoice1);
+		    	// Sets the merchant name. This is the name of your Application or Company.
+		    	
+		    	//Pegar o nome do mercado
+		    	receiver1.setMerchantName("Mercadinho do Senhor José");
+		    	// Sets the description of the payment.
+		    	receiver1.setDescription("O mercado que você precisa");
+		    	// Sets the Custom ID. This is any ID that you would like to have associated with the PayPalReceiverDetails.
+		    	
+		    	//TODO verificar o que fazer com este id
+		    	receiver1.setCustomID("001813");
+		    	// Add the receiver to the payment. Alternatively, you can create an ArrayList<PayPalReceiverOptions>
+		    	// and pass it to the PayPalAdvancedPayment function setReceivers().
+				payment.getReceivers().add(receiver1);
+    	
+    	return payment;
+	}
+	
 	
 
 }
