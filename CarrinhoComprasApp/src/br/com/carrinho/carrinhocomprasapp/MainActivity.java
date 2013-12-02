@@ -5,21 +5,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -110,6 +111,38 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 	}
 	
+	/**
+	 * MENU
+	 */
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	      super.onCreateContextMenu(menu, v, menuInfo);
+	      if (v.getId()==R.id.listView_produtos) {
+	          MenuInflater inflater = getMenuInflater();
+	          inflater.inflate(R.menu.menulist, menu);
+	      }
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	      AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	      switch(item.getItemId()) {
+	         case R.id.action_alterar_qtd:
+	        	 Toast.makeText(this, "Alterar quantidade", Toast.LENGTH_LONG)
+		          .show();
+	            return true;
+	          case R.id.action_remover:
+		        	 carrinho.remove(info.position);
+		        	 adapter.notifyDataSetChanged();
+		        	 totalTxt.setText(getTotalCarrinho());
+	                return true;
+	          
+	          default:
+	                return super.onContextItemSelected(item);
+	      }
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -119,6 +152,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		totalTxt = (TextView)findViewById(R.id.total);
 		
 		listView = (ListView) findViewById(R.id.listView_produtos);
+		
+		
+		registerForContextMenu(listView);
 		
 		// Initialize the library. We'll do it in a separate thread because it requires communication with the server
 				// which may take some time depending on the connection strength/speed.
