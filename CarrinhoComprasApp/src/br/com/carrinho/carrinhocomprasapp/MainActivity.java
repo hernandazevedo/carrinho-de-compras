@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,8 +23,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
+import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
@@ -41,7 +45,7 @@ import com.paypal.android.MEP.PayPalInvoiceData;
 import com.paypal.android.MEP.PayPalInvoiceItem;
 import com.paypal.android.MEP.PayPalReceiverDetails;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener, OnValueChangeListener {
 
 	// The PayPal server to be used - can also be ENV_NONE and ENV_LIVE
 		private static final int server = PayPal.ENV_SANDBOX;
@@ -56,6 +60,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		public static String resultTitle;
 		public static String resultInfo;
 		public static String resultExtra;
+		
+	private Integer produtoPositionSelecionado;	
 		
 	List<Produto> carrinho = new ArrayList<Produto>();
 	ListView listView;
@@ -124,13 +130,49 @@ public class MainActivity extends Activity implements OnClickListener {
 	      }
 	}
 
+	public void showDialogQuantidade() {
+
+		final Dialog d = new Dialog(MainActivity.this);
+		d.setTitle("NumberPicker");
+		d.setContentView(R.layout.dialog);
+		Button b1 = (Button) d.findViewById(R.id.button1);
+		Button b2 = (Button) d.findViewById(R.id.button2);
+		final NumberPicker np = (NumberPicker) d
+				.findViewById(R.id.numberPicker1);
+		np.setMaxValue(100);
+		np.setMinValue(1);
+		np.setWrapSelectorWheel(false);
+		np.setOnValueChangedListener(this);
+		np.setValue(carrinho.get(produtoPositionSelecionado).getQuantidade());
+		b1.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+		       
+				carrinho.get(produtoPositionSelecionado).setQuantidade(np.getValue());
+				adapter.notifyDataSetChanged();
+//				tv.setText(String.valueOf(np.getValue()));
+				d.dismiss();
+			}
+		});
+		b2.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				d.dismiss();
+			}
+		});
+		d.show();
+
+	}
+	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 	      AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	      produtoPositionSelecionado = info.position;
 	      switch(item.getItemId()) {
 	         case R.id.action_alterar_qtd:
-	        	 Toast.makeText(this, "Alterar quantidade", Toast.LENGTH_LONG)
-		          .show();
+	        	 showDialogQuantidade();
+	        	
 	            return true;
 	          case R.id.action_remover:
 		        	 carrinho.remove(info.position);
@@ -235,6 +277,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			ImageView image = (ImageView) view.findViewById(R.id.imageView1);
 			TextView txNome = (TextView) view.findViewById(R.id.textView1);
 			TextView txPreco = (TextView) view.findViewById(R.id.textView2);
+			TextView txQuantidade = (TextView) view.findViewById(R.id.txtViewQuantidade);
 			
 			Produto p = getItem(position);
 			
@@ -243,6 +286,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			
 			txNome.setText(p.getNomeProduto());
 			txPreco.setText(p.getPreco());
+			txQuantidade.setText(String.valueOf(p.getQuantidade()));
 			
 			return view;
 		}
@@ -330,7 +374,8 @@ public class MainActivity extends Activity implements OnClickListener {
 			String scanContent = scanningResult.getContents();
 	
 	//		contentTxt.setText("Resultado adicionando no carrinho");
-			adicionarProdutoCarrinho(scanContent);
+			if(scanContent != null && !scanContent.equals(""))
+				adicionarProdutoCarrinho(scanContent);
 	//		String scanFormat = scanningResult.getFormatName();
 		}
 		
@@ -541,11 +586,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			    	// to less than or equal the subtotal of the payment.
 			    	
 			    	subTotal += Double.parseDouble(p.getPreco()); 
-			    	item1.setTotalPrice(new BigDecimal(p.getPreco()));
+			    	
+			    	item1.setTotalPrice(new BigDecimal(Double.valueOf(p.getPreco()) * p.getQuantidade()));
 			    	// Sets the unit price.
 			    	item1.setUnitPrice(new BigDecimal(p.getPreco()));
 			    	// Sets the quantity.
-			    	item1.setQuantity(1);
+			    	item1.setQuantity(p.getQuantidade());
 			    	// Add the PayPalInvoiceItem to the PayPalInvoiceData. Alternatively, you can create an ArrayList<PayPalInvoiceItem>
 			    	// and pass it to the PayPalInvoiceData function setInvoiceItems().
 			    	invoice1.getInvoiceItems().add(item1);
@@ -570,6 +616,13 @@ public class MainActivity extends Activity implements OnClickListener {
 				payment.getReceivers().add(receiver1);
     	
     	return payment;
+	}
+
+	@Override
+	public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+
+		
+
 	}
 	
 	

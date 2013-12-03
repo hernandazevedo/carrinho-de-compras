@@ -4,5 +4,11 @@
     <string name="app_name">CarrinhoComprasApp</string>
     <string name="action_settings">Configurações</string>
     <string name="hello_world">Hello world!</string>
+    <string name="nome">Nome: </string>
+    <string name="preco">Preco: </string>
+    <string name="quantidade">Quantidade: </string>
+    
+    
+    
 
 </resources>
