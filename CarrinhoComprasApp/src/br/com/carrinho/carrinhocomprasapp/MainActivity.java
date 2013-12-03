@@ -151,6 +151,7 @@ public class MainActivity extends Activity implements OnClickListener, OnValueCh
 		       
 				carrinho.get(produtoPositionSelecionado).setQuantidade(np.getValue());
 				adapter.notifyDataSetChanged();
+				totalTxt.setText(getTotalCarrinho());
 //				tv.setText(String.valueOf(np.getValue()));
 				d.dismiss();
 			}
@@ -414,7 +415,7 @@ public class MainActivity extends Activity implements OnClickListener, OnValueCh
 			
 		double valorTotal = 0.0;
 		for(Produto p : carrinho){
-			valorTotal += Double.parseDouble(p.getPreco());
+			valorTotal += Double.parseDouble(p.getPreco()) * p.getQuantidade();
 		}
 		
 		
@@ -585,7 +586,7 @@ public class MainActivity extends Activity implements OnClickListener, OnValueCh
 			    	// Sets the total price which should be (quantity * unit price). The total prices of all PayPalInvoiceItem should add up
 			    	// to less than or equal the subtotal of the payment.
 			    	
-			    	subTotal += Double.parseDouble(p.getPreco()); 
+			    	subTotal += (Double.parseDouble(p.getPreco()) * p.getQuantidade()); 
 			    	
 			    	item1.setTotalPrice(new BigDecimal(Double.valueOf(p.getPreco()) * p.getQuantidade()));
 			    	// Sets the unit price.
