@@ -15,6 +15,8 @@ public class Produto implements Serializable {
 	private String urlImage;
 	private String preco;
 	private Integer parceiroId;
+	private Integer quantidade = 1; //default
+	
 	public String getCodigoBarras() {
 		return codigoBarras;
 	}
@@ -51,5 +53,11 @@ public class Produto implements Serializable {
 	public void setImageID(int imageID) {
 		this.imageID = imageID;
 	}
-	
+
+	public Integer getQuantidade() {
+		return quantidade;
+	}
+	public void setQuantidade(Integer quantidade) {
+		this.quantidade = quantidade;
+	}
 }
