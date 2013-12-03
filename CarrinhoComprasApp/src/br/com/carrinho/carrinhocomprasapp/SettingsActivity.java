@@ -134,7 +134,7 @@ public class SettingsActivity extends PreferenceActivity {
 				// For list preferences, look up the correct display value in
 				// the preference's 'entries' list.
 				ListPreference listPreference = (ListPreference) preference;
-				if(listPreference.getKey().equals("sync_frequency") || listPreference.getKey().equals("hostport")){
+				if(listPreference.getKey().equals("sync_frequency")){
 					notifyAlarmSync = true;
 				}
 				int index = listPreference.findIndexOfValue(stringValue);
