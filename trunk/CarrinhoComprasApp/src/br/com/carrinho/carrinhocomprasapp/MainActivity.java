@@ -1,6 +1,7 @@
 package br.com.carrinho.carrinhocomprasapp;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -32,12 +34,16 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
+import br.com.carrinho.dao.ParceiroDAO;
 import br.com.carrinho.dao.ProdutoDAO;
+import br.com.carrinho.model.Parceiro;
 import br.com.carrinho.model.Produto;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.paypal.android.MEP.CheckoutButton;
 import com.paypal.android.MEP.PayPal;
 import com.paypal.android.MEP.PayPalAdvancedPayment;
@@ -62,7 +68,8 @@ public class MainActivity extends Activity implements OnClickListener, OnValueCh
 		public static String resultExtra;
 		
 	private Integer produtoPositionSelecionado;	
-		
+	ProdutoDAO produtoDAO;
+	ParceiroDAO parceiroDAO;
 	List<Produto> carrinho = new ArrayList<Produto>();
 	ListView listView;
 	
@@ -403,11 +410,187 @@ public class MainActivity extends Activity implements OnClickListener, OnValueCh
 
 //			contentTxt.setText("CONTENT: " + codigoBarras + "Produto: "+p.getNomeProduto());
 		}else{
-			contentTxt.setText("Produto nao encontrado");
+			//Buscar na rede e caso nao retorne na rede mostrar a mensagem
+			
+			buscarProdutoNaRede(codigoBarras);
+//			if(prod != null){
+//				Log.i(Constants.LOG_TAG,
+//						"Produto encontrado adicionando no carrinho");
+//				ParceiroDAO parceiroDAO = new ParceiroDAO(this);
+//				if(parceiroDAO.get(prod.getParceiroId()) == null){
+//					
+//					Parceiro parcEncontrado = null;//TODO buscar na rede pelo codigo do Parceiro e inserir no celular.
+//					parceiroDAO.insert(parcEncontrado);
+//				}
+//				
+//				carrinho.add(prod);
+//				
+//				adapter.notifyDataSetChanged();
+//
+//			}else{
+//				contentTxt.setText("Produto nao encontrado");
+//			}
 		}
 		
 		totalTxt.setText(getTotalCarrinho());
 	}
+
+	private void buscarParceiroNaRede(Integer codigoParceiro) {
+		String freq = PreferenceManager.getDefaultSharedPreferences(this).getString("sync_frequency", null);
+		
+		if(freq == null || freq.equals("-1")) return ;
+		
+		
+		String hostPort = PreferenceManager.getDefaultSharedPreferences(this).getString("hostport", null); 
+		
+		String urlCall = "http://"+hostPort+"/CarrinhoSync/rest/parceiro/" + codigoParceiro;
+		
+		try {
+			 AsyncHttpClient client = new AsyncHttpClient();
+			 	produtoDAO = new ProdutoDAO(this);
+			 	
+			 	parceiroDAO = new ParceiroDAO(this);
+		        client.get(urlCall, new AsyncHttpResponseHandler() {
+		        	@Override
+		        	public void onSuccess(String content) {
+		        		Parceiro parceiro = processaSucess(content);
+		        		parceiroDAO.insert(parceiro);
+    				}
+		    						        	
+		        	public Parceiro processaSucess(String response) {
+		        		
+		        		List<Parceiro> parceiros = null;
+		        		try {
+		        			parceiros = SyncService.parseJsonToListParceiro(response);
+		        			for (Parceiro p : parceiros) {
+		        				parceiroDAO.insert(p);
+		        				
+		        				return p;
+		        			}
+
+		        		} catch (Exception e) {
+		        			Log.e(MainActivity.class.getName(),
+		        					"Erro ao salvar o parceiro: " + e.getMessage());
+		        		}
+		        		
+		        		return null;
+		        	}
+		        	
+		        });
+			
+//			String response = SyncService.sendGet(urlCall);
+//			return onSuccess(response);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+//		return null;
+	}
+	
+	private void buscarProdutoNaRede(String codigoBarras) {
+		String freq = PreferenceManager.getDefaultSharedPreferences(this).getString("sync_frequency", null);
+		
+		if(freq == null || freq.equals("-1")) return ;
+		
+		
+		String hostPort = PreferenceManager.getDefaultSharedPreferences(this).getString("hostport", null); 
+		
+		String urlCall = "http://"+hostPort+"/CarrinhoSync/rest/sync/" + codigoBarras;
+		
+		try {
+			 AsyncHttpClient client = new AsyncHttpClient();
+			 	produtoDAO = new ProdutoDAO(this);
+			 	
+			 	parceiroDAO = new ParceiroDAO(this);
+		        client.get(urlCall, new AsyncHttpResponseHandler() {
+		        	@Override
+		        	public void onSuccess(String content) {
+		        		Produto prod = processaSucess(content);
+		        		if(prod != null){
+		    				Log.i(Constants.LOG_TAG,
+		    						"Produto encontrado adicionando no carrinho");
+		    				
+		    				if(parceiroDAO.get(prod.getParceiroId()) == null){
+		    					
+		    					buscarParceiroNaRede(prod.getParceiroId());
+		    				}
+		    				
+		    				carrinho.add(prod);
+		    				
+		    				adapter.notifyDataSetChanged();
+
+		    			}else{
+		    				contentTxt.setText("Produto nao encontrado");
+		    			}
+		        	}
+		        	
+		        	public Produto processaSucess(String response) {
+		        		
+		        		List<Produto> produtos = null;
+		        		try {
+		        			produtos = SyncService.parseJsonToListProduto(response);
+		        			for (Produto p : produtos) {
+		        				if (produtoDAO.get(p.getCodigoBarras()) == null) {
+		        					if (produtoDAO.insert(p)) {
+		        						Log.i(MainActivity.class.getName(),
+		        								"Produto com codigo "
+		        										+ p.getCodigoBarras()
+		        										+ " inserido com sucesso!");
+		        					}
+		        				} else {
+		        					produtoDAO.update(p);
+		        				}
+		        				
+		        				return p;
+		        			}
+
+		        		} catch (Exception e) {
+		        			Log.e(MainActivity.class.getName(),
+		        					"Erro ao salvar o produto: " + e.getMessage());
+		        		}
+		        		
+		        		return null;
+		        	}
+		        	
+		        });
+			
+//			String response = SyncService.sendGet(urlCall);
+//			return onSuccess(response);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+//		return null;
+	}
+
+	public Produto onSuccess(String response) {
+		ProdutoDAO produtoDAO = new ProdutoDAO(this);
+		List<Produto> produtos = null;
+		try {
+			produtos = SyncService.parseJsonToListProduto(response);
+			for (Produto p : produtos) {
+				if (produtoDAO.get(p.getCodigoBarras()) == null) {
+					if (produtoDAO.insert(p)) {
+						Log.i(MainActivity.class.getName(),
+								"Produto com codigo "
+										+ p.getCodigoBarras()
+										+ " inserido com sucesso!");
+					}
+				} else {
+					produtoDAO.update(p);
+				}
+				
+				return p;
+			}
+
+		} catch (Exception e) {
+			Log.e(MainActivity.class.getName(),
+					"Erro ao salvar o produto: " + e.getMessage());
+		}
+		
+		return null;
+	}
+	
 
 	private String getTotalCarrinho() {
 		if(carrinho == null || carrinho.isEmpty())
@@ -418,8 +601,8 @@ public class MainActivity extends Activity implements OnClickListener, OnValueCh
 			valorTotal += Double.parseDouble(p.getPreco()) * p.getQuantidade();
 		}
 		
-		
-		return "Total: "+valorTotal;
+		String formattedValue = new DecimalFormat("0.00").format(valorTotal);
+		return "Total: "+formattedValue;
 	}
 
 	@Override
@@ -432,7 +615,6 @@ public class MainActivity extends Activity implements OnClickListener, OnValueCh
 			// Use the android's startActivityForResult() and pass in our Intent. This will start the library.
 //	    	startActivityForResult(checkoutIntent, request);
 	    	
-	    	//TODO fazer o Adjuster para o calculo de frete IMPORTANTE!!!!!!!!!!!!!!!!
 	    	startActivityForResult(PayPal.getInstance().checkout(payment, this, new Adjuster(), new ResultDelegate()), request);
 		}
 		
