@@ -1,7 +1,6 @@
 package br.com.carrinho.rest;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -66,21 +65,22 @@ public class SyncControllerRest {
 		
 		logger.info("Sincronizando o imei: "+imei);
 		
-		RespostaSync respostaSync = new RespostaSync();
+//		RespostaSync respostaSync = new RespostaSync();
+		RespostaSync respostaSync = syncService.retornaSync(imei);
 		
-		List<Produto> listaProduto = new ArrayList<Produto>();
-		Produto produto = new Produto();
-		produto.setCodigoBarras("123456");
-		produto.setDataAlteracao(new Date());
-		produto.setDataCriacao(new Date());
-		produto.setNome("Teste produto 2");
-		produto.setPreco(14.99);
-		produto.setParceiroId(1L);
-		//produto.setUrlImagem("http://t3.gstatic.com/images?q=tbn:ANd9GcQTbYC6J9Dj1jWFyGCATwb2-3Nbjbyq300ZmE0IajLRobPayBB56A");
-		produto.setUrlImagem("http://www.asequeira.com/clientes/fotografia-de-produto1.jpg");
-		
-		listaProduto.add(produto);
-		respostaSync.setListaProduto(listaProduto);
+//		List<Produto> listaProduto = new ArrayList<Produto>();
+//		Produto produto = new Produto();
+//		produto.setCodigoBarras("123456");
+//		produto.setDataAlteracao(new Date());
+//		produto.setDataCriacao(new Date());
+//		produto.setNome("Teste produto 2");
+//		produto.setPreco(14.99);
+//		produto.setParceiroId(1L);
+//		//produto.setUrlImagem("http://t3.gstatic.com/images?q=tbn:ANd9GcQTbYC6J9Dj1jWFyGCATwb2-3Nbjbyq300ZmE0IajLRobPayBB56A");
+//		produto.setUrlImagem("http://www.asequeira.com/clientes/fotografia-de-produto1.jpg");
+//		
+//		listaProduto.add(produto);
+//		respostaSync.setListaProduto(syncService.retornaSync(imei));
 		
 		return Response.status(200).entity(respostaSync).build();
  
