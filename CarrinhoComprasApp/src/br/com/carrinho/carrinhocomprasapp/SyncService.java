@@ -1,14 +1,11 @@
 package br.com.carrinho.carrinhocomprasapp;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,28 +16,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import br.com.carrinho.dao.ParceiroDAO;
 import br.com.carrinho.dao.ProdutoDAO;
+import br.com.carrinho.model.Parceiro;
 import br.com.carrinho.model.Produto;
-
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class SyncService extends IntentService {
 
 	//Teste com ip externo usando 3g
-	private static String hostPort = "hernand.no-ip.org";
+//	private static String hostPort = "hernand.no-ip.org";
 
 	//Teste usando localhost
-//	private static final String host = "10.0.2.2";
+	private static String hostPort = "10.0.2.2:8080";
 	
 	public SyncService() {
 		super("Sync Service");
 	}
 
-	ProdutoDAO produtoDAO;
+	private static ProdutoDAO produtoDAO;
+	ParceiroDAO parceiroDAO;
 
 	// HTTP GET request
-		private String sendGet(String url) throws Exception {
+		public static String sendGet(String url) throws Exception {
 	 
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -68,7 +65,7 @@ public class SyncService extends IntentService {
 	 
 		}
 	
-		public void onSuccess(String response) {
+		public static void onSuccess(String response) {
 
 			List<Produto> produtos = null;
 			try {
@@ -101,7 +98,9 @@ public class SyncService extends IntentService {
 		produtoDAO = new ProdutoDAO(context);
 		hostPort = PreferenceManager.getDefaultSharedPreferences(context).getString("hostport", null); 
 
-		String urlCall = "http://"+hostPort+"/CarrinhoSync/rest/sync/" + imei;
+		String listaParceiros = getParceirosIdAtivosPorVirgula(context); // TODO construir uma lista com os parceiros separados por virgula. Enviar -99 caso nao haja nenhum
+		
+		String urlCall = "http://"+hostPort+"/CarrinhoSync/rest/sync/" + imei +"/"+listaParceiros;
 		
 		try {
 			String response = sendGet(urlCall);
@@ -113,48 +112,70 @@ public class SyncService extends IntentService {
 		
 	}
 
-	// HTTP POST request
-		private void sendPost() throws Exception {
-	 
-			String url = "https://selfsolve.apple.com/wcResults.do";
-			URL obj = new URL(url);
-			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-	 
-			//add reuqest header
-			con.setRequestMethod("POST");
-//			con.setRequestProperty("User-Agent", USER_AGENT);
-			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-	 
-			String urlParameters = "sn=C02G8416DRJM&cn=&locale=&caller=&num=12345";
-	 
-			// Send post request
-			con.setDoOutput(true);
-			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-			wr.writeBytes(urlParameters);
-			wr.flush();
-			wr.close();
-	 
-			int responseCode = con.getResponseCode();
-			System.out.println("\nSending 'POST' request to URL : " + url);
-			System.out.println("Post parameters : " + urlParameters);
-			System.out.println("Response Code : " + responseCode);
-	 
-			BufferedReader in = new BufferedReader(
-			        new InputStreamReader(con.getInputStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
-	 
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
+	private String getParceirosIdAtivosPorVirgula(Context context) {
+		parceiroDAO = new ParceiroDAO(context);
+		
+		StringBuilder parceirosAtivos = new StringBuilder();
+		
+		List<Parceiro> listParceiros = parceiroDAO.getAll();
+		
+		for(Parceiro p :listParceiros){
+			if(parceirosAtivos.length() == 0){
+				parceirosAtivos.append(p.getParceiroId());
 			}
-			in.close();
-	 
-			//print result
-			System.out.println(response.toString());
-	 
+			else{
+				parceirosAtivos.append(",");
+				parceirosAtivos.append(p.getParceiroId());
+			}
 		}
-	
-	private List<Produto> parseJsonToListProduto(String string) {
+		
+
+		if(parceirosAtivos.length() == 0) parceirosAtivos.append("-99");
+		return parceirosAtivos.toString();
+	}
+//
+//	// HTTP POST request
+//		private void sendPost() throws Exception {
+//	 
+//			String url = "https://selfsolve.apple.com/wcResults.do";
+//			URL obj = new URL(url);
+//			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+//	 
+//			//add reuqest header
+//			con.setRequestMethod("POST");
+////			con.setRequestProperty("User-Agent", USER_AGENT);
+//			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+//	 
+//			String urlParameters = "sn=C02G8416DRJM&cn=&locale=&caller=&num=12345";
+//	 
+//			// Send post request
+//			con.setDoOutput(true);
+//			DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+//			wr.writeBytes(urlParameters);
+//			wr.flush();
+//			wr.close();
+//	 
+//			int responseCode = con.getResponseCode();
+//			System.out.println("\nSending 'POST' request to URL : " + url);
+//			System.out.println("Post parameters : " + urlParameters);
+//			System.out.println("Response Code : " + responseCode);
+//	 
+//			BufferedReader in = new BufferedReader(
+//			        new InputStreamReader(con.getInputStream()));
+//			String inputLine;
+//			StringBuffer response = new StringBuffer();
+//	 
+//			while ((inputLine = in.readLine()) != null) {
+//				response.append(inputLine);
+//			}
+//			in.close();
+//	 
+//			//print result
+//			System.out.println(response.toString());
+//	 
+//		}
+//	
+	public static List<Produto> parseJsonToListProduto(String string) {
 		JSONObject obj = null;
 		List<Produto> produtos = new ArrayList<Produto>();
 		try {
@@ -190,6 +211,41 @@ public class SyncService extends IntentService {
 		}
 
 		return produtos;
+	}
+	
+	public static List<Parceiro> parseJsonToListParceiro(String string) {
+		JSONObject obj = null;
+		List<Parceiro> parceiros = new ArrayList<Parceiro>();
+		try {
+			obj = new JSONObject(string);
+
+			JSONArray discountListArray = obj
+					.getJSONArray("listaParceiro");
+			for (int i = 0; i < discountListArray.length(); i++) {
+				Integer id =  discountListArray
+						.getJSONObject(i).getInt("parceiroId");
+				String nome = discountListArray.getJSONObject(i)
+						.getString("nome");
+				String receiverPaypal = discountListArray.getJSONObject(i)
+						.getString("receiverPaypal");
+			
+
+				Parceiro p = new Parceiro();
+				p.setParceiroId(id);
+				p.setNome(nome);
+				p.setReceiverPaypal(receiverPaypal);
+				
+				
+
+				parceiros.add(p);
+			}
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return parceiros;
 	}
 	
 	@Override
