@@ -91,5 +91,6 @@
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 	
+	<distributable/>
 	
 </web-app>
