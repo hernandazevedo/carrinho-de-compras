@@ -15,18 +15,10 @@
 		  removeAbandonedTimeout="300" logAbandoned="true"
 		  username="root" password="root" driverClassName="com.mysql.jdbc.Driver" 
 		  url="jdbc:mysql://localhost:3306/masterkey" description="Base de dados"
+		  validationQuery="SELECT 1"
+          validationInterval="30000"
+          testOnBorrow="true"
 		  />
 		  
 	
-	<Resource name="jdbc/weldtomcatamazon" 
-                  auth="Container" 
-                  type="javax.sql.DataSource" 
-                  maxActive="5" 
-                  initialSize="2" 
-                  minIdle="2" maxIdle="4" 
-                  maxWait="5000" removeAbandoned="true" 
-                  removeAbandonedTimeout="300" logAbandoned="true"
-                  username="masterkey" password="masterkey" driverClassName="com.mysql.jdbc.Driver" 
-                  url="jdbc:mysql://50.112.19.207:3306/masterkey" description="Base de dados"
-                  />
 </Context>
