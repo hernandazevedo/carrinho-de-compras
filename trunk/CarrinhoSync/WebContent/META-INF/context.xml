@@ -9,7 +9,7 @@
 		  auth="Container" 
 		  type="javax.sql.DataSource" 
 		  maxActive="50" 
-		  initialSize="0" 
+		  initialSize="2" 
 		  minIdle="10" maxIdle="15" 
 		  maxWait="5000" removeAbandoned="true" 
 		  removeAbandonedTimeout="300" logAbandoned="true"
