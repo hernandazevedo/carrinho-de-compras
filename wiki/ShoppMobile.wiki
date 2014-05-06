@@ -22,9 +22,9 @@ Site de homologação do paypal
 
 http://sandbox.paypal.com
 Vendedor
-hernand.azevedo-facilitator@gmail.com
-6952pato
+Usuario: hernand.azevedo-facilitator@gmail.com
+Senha: 6952pato
 
 Comprador
-hernand_azevedo@hotmail.com
-6952pato
+Usuario: hernand_azevedo@hotmail.com
+Senha: 6952pato
