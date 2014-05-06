@@ -1,4 +1,3 @@
-
 = Introdução =
 
 
@@ -10,6 +9,8 @@ Download da aplicação mobile em homologação
 
 https://carrinho-de-compras.googlecode.com/svn/trunk/CarrinhoComprasApp/br.com.carrinho.carrinhocomprasapp.apk
 
+
+Apontar o Hostname nas configurações do aplicativo para: "hernand.no-ip.org:8080" ou o ip da aplicacao que estiver rodando o CarrinhoSync.
 
 Imagens qrcodes
 
